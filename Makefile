@@ -4,7 +4,7 @@
 
 # Compiler settings - Can be customized.
 CC = g++
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -std=c++11 -Wall -g 
 LDFLAGS = 
 
 # Makefile settings - Can be customized.
@@ -13,8 +13,10 @@ EXT = .C
 SRCDIR = src
 OBJDIR = obj
 BOOSTDIR = -I/opt/devl/optimize/boost/include
-INCS = $(BOOSTDIR)
-LIBS = 
+GOOGLEOR = -I/home/e140506/Downloads/or_tools_bin/include
+INCS = ${BOOSTDIR} ${GOOGLEOR}
+GOOGLEORLIBS = -L/home/e140506/Downloads/or_tools_bin/lib -lortools
+LIBS = ${GOOGLEORLIBS}
 
 
 ############## Do not change anything from here downwards! #############
@@ -37,37 +39,15 @@ all: $(APPNAME)
 
 # Builds the app
 $(APPNAME): $(OBJ)
-	$(CC) $(CXXFLAGS) $(INCS) $(LIBS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CXXFLAGS) $(INCS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-# Creates the dependecy rules
-%.d: $(SRCDIR)/%$(EXT)
-	@$(CPP) $(CFLAGS)  $< -MM -MT $(@:%.d=$(OBJDIR)/%.o) >$@
-
-# Includes all .h files
--include $(DEP)
 
 # Building rule for .o files and its .c/.cpp in combination with all .h
 $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
-	$(CC) $(CXXFLAGS) $(INCS) -o $@ -c $<
+	$(CC) $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -c $<
 
 ################### Cleaning rules for Unix-based OS ###################
 # Cleans complete project
 .PHONY: clean
 clean:
-	$(RM) $(DELOBJ) $(DEP) $(APPNAME)
-
-# Cleans only all files with the extension .d
-.PHONY: cleandep
-cleandep:
-	$(RM) $(DEP)
-
-#################### Cleaning rules for Windows OS #####################
-# Cleans complete project
-.PHONY: cleanw
-cleanw:
-	$(DEL) $(WDELOBJ) $(DEP) $(APPNAME)$(EXE)
-
-# Cleans only all files with the extension .d
-.PHONY: cleandepw
-cleandepw:
-	$(DEL) $(DEP)
+	$(RM) $(DELOBJ) $(APPNAME)

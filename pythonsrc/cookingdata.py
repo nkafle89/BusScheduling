@@ -64,19 +64,32 @@ def PutEverything(Morning):
     return allrows
 
 
-if __name__ == "__main__":
-    Morning = datetime.datetime(2020, 1, 1, 5, 0, 0)
+def onedayData(day):
+    Morning = day +datetime.timedelta(hours=5)
     morn = PutEverything(Morning)
     df1 = pd.DataFrame(morn, columns=['Origin', 'Destination', 'BusType', 'DepDateTime', 'ArrDateTime', 'Profit'])
 
-    afternoon = datetime.datetime(2020, 1, 1, 13, 0, 0)
+    afternoon = day + datetime.timedelta(hours=13)
     morn = PutEverything(afternoon)
     df2 = pd.DataFrame(morn, columns=['Origin', 'Destination', 'BusType', 'DepDateTime', 'ArrDateTime', 'Profit'])
 
-    evening = datetime.datetime(2020, 1, 1, 17, 0, 0)
+    evening = day + datetime.timedelta(hours=17)
     morn = PutEverything(evening)
     df3 = pd.DataFrame(morn, columns=['Origin', 'Destination', 'BusType', 'DepDateTime', 'ArrDateTime', 'Profit'])
 
     df = pd.concat([df1, df2, df3])
 
-    df.to_csv("random_schdule.csv")
+    return df
+
+
+
+if __name__ == "__main__":
+    day = datetime.datetime(2020, 1, 1, 0, 0)
+    df = pd.DataFrame()
+    for i in range(7):
+        days = day + datetime.timedelta(days=i)
+        dfi = onedayData(days)
+        df = pd.concat([df, dfi])
+
+
+    df.to_csv("../random_schedule7.csv")
