@@ -15,4 +15,8 @@ public:
 	void resetRouteValues(std::vector<Route*>& allroutes, Route* source, bool visitedNode= false);
 	Path* backTrackPath(Route* dest );
 	void getAllCoveringPaths();
+	void Relax(Route* rtr, Route* next, bool& changes, bool& remove);
+	void getPositivePaths();
 };
+
+

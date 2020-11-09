@@ -26,6 +26,7 @@ private:
 
     std::vector<Path*> _allpaths;
     MPSolver* const _solver;
+    MPConstraint* _capConst = nullptr;
 
 public:
     AllEnv(MPSolver* const solver): _solver(solver){}
@@ -51,5 +52,7 @@ public:
 	operations_research::MPSolver* getSolver(){return _solver ;}
 	void createRouteCovConstraint();
 	void createPathVariables();
-
+	void createCapConstraint();
+	void setObj();
+	MPConstraint* getCapConst(){return _capConst ;}
 };

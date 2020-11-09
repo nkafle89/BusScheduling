@@ -3,6 +3,9 @@
 #include "Path.h"
 #include "BellManFord.h"
 #include <chrono>
+#include <future>
+//#include <execution>
+
 using namespace std::chrono;
 using namespace std;
 
@@ -20,15 +23,7 @@ void BellManFord::BellManFordSearch(vector<Route*>& allroutes, bool remove )
 			vector<Route*> extndRoutes = rtr->GetExtendRoutes();
 			for (Route* next : extndRoutes)
 			{
-				if( remove && next->visited() ) continue;
-
-				double dv = rtr->spCost() - next->getProfit();
-				if  (dv < next->spCost())
-				{
-					next->spCost(dv);
-					next->setPreviousRoute(rtr);
-					changes = true;
-				}
+				Relax( rtr, next, changes, remove );
 			}
 		}
 
@@ -48,6 +43,7 @@ Path* BellManFord::backTrackPath(Route* dest)
 {
 	Path* path = new Path(_id++);
 
+	path->addRoute(dest);
 	Route* rtr = dest->getPreviousRoute();
 
 	while (rtr->getPreviousRoute())
@@ -98,5 +94,43 @@ void BellManFord::getAllCoveringPaths()
 	auto stop = high_resolution_clock::now();
 	duration<double, milli> duration = stop - start;
 	cout <<"No of Paths Created "<< ith <<" execution time " << duration.count() <<" ms." <<endl;
+}
+
+
+void BellManFord::Relax(Route* rtr, Route* next, bool& changes, bool& remove)
+{
+	if( remove && next->visited() ) return;
+	double dv = rtr->spCost() - next->getProfit();
+	if  (dv < next->spCost())
+	{
+		next->spCost(dv);
+		next->setPreviousRoute(rtr);
+		changes = true;
+	}
+}
+
+
+void BellManFord::getPositivePaths()
+{
+	auto start = high_resolution_clock::now();
+	cout<< "Starting BellManFord" <<endl;
+	vector<Route*> allrts = allenv->getAllRoutes();
+	Route* source = allrts.front();
+
+	BellManFordSearch(allrts, false);
+	for (Route* rtr: allrts)
+	{
+		if( rtr->isDepot() ) continue;
+
+		Path* path = backTrackPath( rtr );
+		if (path->getProfit()>0)
+		{
+			allenv->AddPath(path);
+		}
+	}
+	resetRouteValues(allrts, source, true);
+	auto stop = high_resolution_clock::now();
+	duration<double, milli> duration = stop - start;
+	cout <<"Get Positive Paths Execution time " << duration.count() <<" ms." <<endl;
 }
 

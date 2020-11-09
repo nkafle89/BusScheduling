@@ -15,8 +15,9 @@ OBJDIR = obj
 BOOSTDIR = -I/opt/devl/optimize/boost/include
 GOOGLEOR = -I/home/e140506/Downloads/or_tools_bin/include
 INCS = ${BOOSTDIR} ${GOOGLEOR}
-GOOGLEORLIBS = -L/home/e140506/Downloads/or_tools_bin/lib -lortools
-LIBS = ${GOOGLEORLIBS}
+GOOGLEORLIBS = -L/home/e140506/Downloads/or_tools_bin/lib -lortools -lprotobuf
+PTHREAD= -pthread
+LIBS = ${GOOGLEORLIBS} ${PTHREAD}
 
 
 ############## Do not change anything from here downwards! #############
@@ -39,12 +40,12 @@ all: $(APPNAME)
 
 # Builds the app
 $(APPNAME): $(OBJ)
-	$(CC) $(CXXFLAGS) $(INCS) -o $@ $^ $(LDFLAGS) $(LIBS)
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(INCS) -o $@ $^  $(LIBS)
 
 
 # Building rule for .o files and its .c/.cpp in combination with all .h
 $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
-	$(CC) $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -c $<
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(INCS) $(LIBS) -o $@ -c $<
 
 ################### Cleaning rules for Unix-based OS ###################
 # Cleans complete project
