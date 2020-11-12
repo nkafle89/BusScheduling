@@ -23,6 +23,7 @@ Route::Route(int id, string& origin, string& destination, string& busType, ptime
     setDay(day);
     isDepot(isdepot);
 
+    _reducedCost = prft;
     _visited = false;
     _previous = nullptr;
     _spcost = (origin=="Origin") ? 0: 100000;

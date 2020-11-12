@@ -4,7 +4,12 @@
 
 using namespace std;
 
+
+void ColumnGeneration();
+
+/*
 namespace operations_research{
+
 void BuildandSolveMIP() {
   // Create the linear solver with the SCIP backend.
   MPSolver solver("Problem", MPSolver::CLP_LINEAR_PROGRAMMING);
@@ -35,7 +40,7 @@ void BuildandSolveMIP() {
   cap += x3;
   MPConstraint* const rt4 = solver.MakeRowConstraint(cap<= 1.0, "Rt4");
 
-  /*
+
   rt1->SetCoefficient(x1, 1);
   //rt1->SetCoefficient(x4, 1);
   rt2->SetCoefficient(x2, 1);
@@ -46,7 +51,7 @@ void BuildandSolveMIP() {
   rt4->SetCoefficient(x2, 1);
   rt4->SetCoefficient(x3, 1);
   //rt4->SetCoefficient(x4, 1);
-*/
+
 
 
   cout << "Number of constraints = " << solver.NumConstraints()<< std::endl;
@@ -85,3 +90,4 @@ void BuildandSolveMIP() {
   cout<< lpfile <<endl;
 }
 }
+*/

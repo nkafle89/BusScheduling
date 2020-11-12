@@ -25,6 +25,7 @@ private:
     bool _visited;
     Route* _previous;
     double _spcost;
+    double _reducedCost;
 
     std::vector<Path*> _presentInPath;
 
@@ -68,6 +69,9 @@ public:
 
     double spCost(){ return _spcost; }
     void spCost(double x){ _spcost=x; }
+
+    void reducedCost(double x){_reducedCost=x;}
+    double reducedCost(){ return _reducedCost; }
 
     Route* getPreviousRoute(){ return _previous; }
     void setPreviousRoute(Route* rt) {_previous = rt; }

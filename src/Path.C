@@ -7,6 +7,7 @@ using namespace std;
 Path::Path(int id)
 {
 	_profit = 0;
+	_reducedprofit = 0;
 	_id = id;
 }
 
@@ -14,6 +15,7 @@ void Path::addRoute( Route* rtr )
 {
 	_path.push_back(rtr);
 	incrProfit( rtr->getProfit() );
+	incrReducedProfit( rtr->reducedCost() );
 }
 
 ostream& operator<<(ostream& os, Path& path)

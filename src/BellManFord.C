@@ -61,9 +61,10 @@ void BellManFord::resetRouteValues(vector<Route*>& allroutes, Route* source, boo
 {
 	for (Route* rtr: allroutes)
 	{
-		rtr->spCost(100000);
+		rtr->spCost(1000000);
 		rtr->setPreviousRoute(nullptr);
 		if ( visitedNode ) rtr->visited(false);
+		rtr->reducedCost(rtr->getProfit());
 	}
 	source->spCost(0);
 }
@@ -100,7 +101,7 @@ void BellManFord::getAllCoveringPaths()
 void BellManFord::Relax(Route* rtr, Route* next, bool& changes, bool& remove)
 {
 	if( remove && next->visited() ) return;
-	double dv = rtr->spCost() - next->getProfit();
+	double dv = rtr->spCost() - next->reducedCost();
 	if  (dv < next->spCost())
 	{
 		next->spCost(dv);
@@ -110,8 +111,9 @@ void BellManFord::Relax(Route* rtr, Route* next, bool& changes, bool& remove)
 }
 
 
-void BellManFord::getPositivePaths()
+int BellManFord::getPositivePaths()
 {
+	int count =0 ;
 	auto start = high_resolution_clock::now();
 	cout<< "Starting BellManFord" <<endl;
 	vector<Route*> allrts = allenv->getAllRoutes();
@@ -123,14 +125,16 @@ void BellManFord::getPositivePaths()
 		if( rtr->isDepot() ) continue;
 
 		Path* path = backTrackPath( rtr );
-		if (path->getProfit()>0)
+		if (path->getReducedProfit()>0)
 		{
 			allenv->AddPath(path);
+			count++;
 		}
 	}
 	resetRouteValues(allrts, source, true);
 	auto stop = high_resolution_clock::now();
 	duration<double, milli> duration = stop - start;
 	cout <<"Get Positive Paths Execution time " << duration.count() <<" ms." <<endl;
+	return count;
 }
 

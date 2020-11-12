@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     MPSolver solver("Problem", MPSolver::CLP_LINEAR_PROGRAMMING); //SCIP_MIXED_INTEGER_PROGRAMMING
     MPSolverParameters params;
     MPSolverParameters::IntegerParam iparms = MPSolverParameters::IntegerParam::LP_ALGORITHM;
-    params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::PRIMAL);
+    params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::BARRIER);
 
     allenv = new AllEnv(&solver);
     
@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
 
     BellManFord* bellman = new BellManFord;
     bellman->getPositivePaths();
-    		//getAllCoveringPaths();
 
     allenv->createPathVariables();
     allenv->createRouteCovConstraint();
@@ -60,7 +59,6 @@ int main(int argc, char* argv[])
     	if (path->getVar()->solution_value()>0.01)
     	{
     		cout << "Solution Value is " << path->getVar()->solution_value() <<endl;
-    		cout<< *path<<endl;
     		cout << path->getId()<< ","<< path->getProfit()<< "   ";
     		cout << path->getId() << " RC " << path->getVar()->reduced_cost() << endl;
     	}
@@ -70,8 +68,10 @@ int main(int argc, char* argv[])
     {
     	if (rtr->getRow())
     	{
-			if(rtr->getRow()->dual_value()>0.01)
-				cout << "Dual Vars "<< rtr->getId() <<" " << rtr->getRow()->dual_value() <<endl;
+    		double dual = rtr->getRow()->dual_value();
+			if(dual>0.01)
+				rtr->reducedCost(rtr->getProfit()- dual);
+				//cout << "Dual Vars "<< rtr->getId() <<" " << rtr->getRow()->dual_value() <<endl;
     	}
     }
 

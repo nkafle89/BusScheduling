@@ -11,7 +11,9 @@ class Path
 private:
 	std::vector<Route*> _path;
     double _profit;
+    double _reducedprofit;
     int _id;
+    std::string _schType;
 
     operations_research::MPVariable* _var = nullptr;
 
@@ -19,7 +21,9 @@ public:
     Path(int id);
     ~Path() {};
     double getProfit() { return _profit; }
+    double getReducedProfit() { return _reducedprofit; }
     void incrProfit( double x ){ _profit += x; }
+    void incrReducedProfit( double x ){ _reducedprofit += x; }
     std::vector<Route*> getPath(){ return _path; }
 
     Route* getRoute( int n ) { return _path.at(n) ;}

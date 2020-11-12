@@ -7,11 +7,14 @@
 #include "Compare.h"
 #include "Path.h"
 #include "ortools/linear_solver/linear_solver.h"
+#include "BellManFord.h"
+
 using namespace operations_research;
 
 class Route;
 class Vehicle;
 class Path;
+class BellManFord;
 
 class AllEnv
 {
@@ -27,6 +30,7 @@ private:
     std::vector<Path*> _allpaths;
     MPSolver* const _solver;
     MPConstraint* _capConst = nullptr;
+    BellManFord* _bellman = nullptr;
 
 public:
     AllEnv(MPSolver* const solver): _solver(solver){}
@@ -55,4 +59,6 @@ public:
 	void createCapConstraint();
 	void setObj();
 	MPConstraint* getCapConst(){return _capConst ;}
+
+	BellManFord* getBellManFord();
 };

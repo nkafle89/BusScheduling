@@ -2,6 +2,7 @@
 #include <vector>
 
 class Route;
+class Path;
 
 class BellManFord
 {
@@ -16,7 +17,5 @@ public:
 	Path* backTrackPath(Route* dest );
 	void getAllCoveringPaths();
 	void Relax(Route* rtr, Route* next, bool& changes, bool& remove);
-	void getPositivePaths();
+	int getPositivePaths();
 };
-
-

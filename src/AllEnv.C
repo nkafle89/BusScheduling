@@ -58,3 +58,16 @@ void AllEnv::setObj()
 	}
 	objective->SetMaximization();
 }
+
+BellManFord* AllEnv::getBellManFord()
+{
+	if (_bellman)
+	{
+		return _bellman;
+	}
+	else
+	{
+		_bellman = new BellManFord;
+		return _bellman;
+	}
+}
