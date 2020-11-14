@@ -31,6 +31,7 @@ private:
     MPSolver* const _solver;
     MPConstraint* _capConst = nullptr;
     BellManFord* _bellman = nullptr;
+    double _capconstDual= 0;
 
 public:
     AllEnv(MPSolver* const solver): _solver(solver){}
@@ -61,4 +62,7 @@ public:
 	MPConstraint* getCapConst(){return _capConst ;}
 
 	BellManFord* getBellManFord();
+
+	void setCapcaityDual( double x) { _capconstDual = x; }
+	double getCapacityDual(){ return _capconstDual; }
 };

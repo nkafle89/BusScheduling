@@ -12,14 +12,14 @@ private:
 	std::vector<Route*> _path;
     double _profit;
     double _reducedprofit;
-    int _id;
+    int _id = -1;
     std::string _schType;
 
     operations_research::MPVariable* _var = nullptr;
 
 public:
-    Path(int id);
-    ~Path() {};
+    Path();
+    ~Path(){};
     double getProfit() { return _profit; }
     double getReducedProfit() { return _reducedprofit; }
     void incrProfit( double x ){ _profit += x; }
@@ -30,10 +30,13 @@ public:
     void addRoute( Route* rtr );
     void makeReverse() { std::reverse( _path.begin(), _path.end() ) ;}
 
+    void setId(int id){ _id = id ; }
     int getId(){ return _id; }
 
     void setVar(operations_research::MPVariable* var){ _var=var ;}
     operations_research::MPVariable* getVar(){return _var;}
 
+
+    void buildIncidenceRelation(Path* path);
 };
 std::ostream& operator<<(std::ostream& os, Path& path);

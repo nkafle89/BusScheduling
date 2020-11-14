@@ -41,21 +41,23 @@ void BellManFord::BellManFordSearch(vector<Route*>& allroutes, bool remove )
 
 Path* BellManFord::backTrackPath(Route* dest)
 {
-	Path* path = new Path(_id++);
+	Path* path = new Path();
 
 	path->addRoute(dest);
+	dest->visited(true);
+	//dest->presentInPath(path);
+
 	Route* rtr = dest->getPreviousRoute();
 
 	while (rtr->getPreviousRoute())
 	{
 		path->addRoute(rtr);
 		rtr->visited(true);
-		rtr->presentInPath(path);
+		//rtr->presentInPath(path);
 		rtr = rtr->getPreviousRoute();
 	}
 	return path;
 }
-
 
 void BellManFord::resetRouteValues(vector<Route*>& allroutes, Route* source, bool visitedNode)
 {
@@ -125,10 +127,16 @@ int BellManFord::getPositivePaths()
 		if( rtr->isDepot() ) continue;
 
 		Path* path = backTrackPath( rtr );
-		if (path->getReducedProfit()>0)
+		if ( path->getReducedProfit() - allenv->getCapacityDual() > 0 )
 		{
 			allenv->AddPath(path);
+			path->setId(_id++);
+			path->buildIncidenceRelation(path);
 			count++;
+		}
+		else
+		{
+			delete path;
 		}
 	}
 	resetRouteValues(allrts, source, true);

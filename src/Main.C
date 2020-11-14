@@ -22,62 +22,13 @@ int main(int argc, char* argv[])
     }
 
     MPSolver solver("Problem", MPSolver::CLP_LINEAR_PROGRAMMING); //SCIP_MIXED_INTEGER_PROGRAMMING
-    MPSolverParameters params;
-    MPSolverParameters::IntegerParam iparms = MPSolverParameters::IntegerParam::LP_ALGORITHM;
-    params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::BARRIER);
 
     allenv = new AllEnv(&solver);
     
     InitializeScenario(argc, argv);
     ReadInputFiles();
     CreateExtendMap();
-
-
-    BellManFord* bellman = new BellManFord;
-    bellman->getPositivePaths();
-
-    allenv->createPathVariables();
-    allenv->createRouteCovConstraint();
-    allenv->createCapConstraint();
-    allenv->setObj();
-
-    const MPSolver::ResultStatus result_status = solver.Solve(params);
-
-    cout << result_status <<endl;
-    cout << "Objective Value " << allenv->getSolver()->MutableObjective()->Value() <<endl;
-    string lpfile;
-    allenv->getSolver()->ExportModelAsLpFormat(false, &lpfile);
-
-    ofstream file("./filename.lp");
-
-    file << lpfile;
-
-    vector<Path*> allp = allenv->getAllPaths();
-
-    for (Path* path : allp)
-    {
-    	if (path->getVar()->solution_value()>0.01)
-    	{
-    		cout << "Solution Value is " << path->getVar()->solution_value() <<endl;
-    		cout << path->getId()<< ","<< path->getProfit()<< "   ";
-    		cout << path->getId() << " RC " << path->getVar()->reduced_cost() << endl;
-    	}
-    }
-
-    for (Route* rtr: allenv->getAllRoutes())
-    {
-    	if (rtr->getRow())
-    	{
-    		double dual = rtr->getRow()->dual_value();
-			if(dual>0.01)
-				rtr->reducedCost(rtr->getProfit()- dual);
-				//cout << "Dual Vars "<< rtr->getId() <<" " << rtr->getRow()->dual_value() <<endl;
-    	}
-    }
-
-    cout << "Dual Vars Cap "<< allenv->getCapConst()->dual_value()<<endl;
-
-
-	//operations_research::BuildandSolveMIP();
     cout<< "Solving Bus Routing problem..."<< endl;
+
+    ColumnGeneration();
 }

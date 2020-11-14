@@ -4,11 +4,10 @@
 
 using namespace std;
 
-Path::Path(int id)
+Path::Path()
 {
 	_profit = 0;
 	_reducedprofit = 0;
-	_id = id;
 }
 
 void Path::addRoute( Route* rtr )
@@ -18,13 +17,24 @@ void Path::addRoute( Route* rtr )
 	incrReducedProfit( rtr->reducedCost() );
 }
 
+void Path::buildIncidenceRelation(Path* path)
+{
+	vector<Route*> allroutes = path->getPath();
+	for (Route* rtr: allroutes)
+	{
+		rtr->presentInPath(path);
+	}
+}
+
 ostream& operator<<(ostream& os, Path& path)
 {
 	vector<Route*> rtrs = path.getPath();
+	os << "Path " << path.getId() << " Profit " << path.getProfit() << " Reduced Profit "
+			<< path.getReducedProfit() << endl;
 	for (Route* rtr: rtrs)
 	{
-		os<< *rtr << "<=="<<endl;
+		os<< *rtr;
 	}
-	os << "Profit = " << path.getProfit() <<endl;
+	//os << "Profit = " << path.getProfit() <<endl;
 	return os;
 }

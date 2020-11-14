@@ -14,8 +14,10 @@ void AllEnv::createRouteCovConstraint()
 		LinearExpr pathSum;
 		for (Path* path: rtr->presentInPath())
 		{
+			//cout << *path <<endl;
 			pathSum += path->getVar();
 		}
+		//cout << pathSum <<endl;
 		MPConstraint* row = solver->MakeRowConstraint(pathSum <= 1.0, name);
 		rtr->setRow(row);
 	}
@@ -30,7 +32,7 @@ void AllEnv::createPathVariables()
 		if (!path->getVar())
 		{
 			string name = "X" + to_string(path->getId());
-			MPVariable* const x = solver->MakeVar(0.0, 1, false, name);
+			MPVariable* const x = solver->MakeNumVar(0.0, 1, name);
 			path->setVar(x);
 		}
 	}

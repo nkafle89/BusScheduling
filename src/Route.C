@@ -40,8 +40,8 @@ ostream& operator<<(ostream& os, Route& route)
 	os << route.getArrDT() << "  ";
 	os << route.getOrigin()<< "  ";
 	os << route.getDest()<< "  ";
-	os << route.getProfit() << "  ";
-	os << route.spCost() << "  ";
+	//os << route.getProfit() << "  ";
+	//os << route.spCost() << "  ";
 	os << endl;
 
 	return os;
