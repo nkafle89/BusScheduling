@@ -28,6 +28,7 @@ private:
     std::vector<Vehicle*> _allVehicle;
 
     std::vector<Path*> _allpaths;
+    std::multimap<const double, Path*> _profitPathMap;
     MPSolver* const _solver;
     MPConstraint* _capConst = nullptr;
     BellManFord* _bellman = nullptr;
@@ -65,4 +66,7 @@ public:
 
 	void setCapcaityDual( double x) { _capconstDual = x; }
 	double getCapacityDual(){ return _capconstDual; }
+
+	bool doesPathExists(Path* path);
+
 };

@@ -45,7 +45,6 @@ Path* BellManFord::backTrackPath(Route* dest)
 
 	path->addRoute(dest);
 	dest->visited(true);
-	//dest->presentInPath(path);
 
 	Route* rtr = dest->getPreviousRoute();
 
@@ -53,9 +52,9 @@ Path* BellManFord::backTrackPath(Route* dest)
 	{
 		path->addRoute(rtr);
 		rtr->visited(true);
-		//rtr->presentInPath(path);
 		rtr = rtr->getPreviousRoute();
 	}
+
 	return path;
 }
 
@@ -122,13 +121,16 @@ int BellManFord::getPositivePaths()
 	Route* source = allrts.front();
 
 	BellManFordSearch(allrts, false);
+	double capDual = allenv->getCapacityDual();
 	for (Route* rtr: allrts)
 	{
 		if( rtr->isDepot() ) continue;
 
 		Path* path = backTrackPath( rtr );
-		if ( path->getReducedProfit() - allenv->getCapacityDual() > 0 )
+		if ( path->getReducedProfit() - capDual > 0 )
 		{
+			if (allenv->doesPathExists(path)) continue;
+
 			allenv->AddPath(path);
 			path->setId(_id++);
 			path->buildIncidenceRelation(path);

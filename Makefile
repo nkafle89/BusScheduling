@@ -4,7 +4,7 @@
 
 # Compiler settings - Can be customized.
 CC = g++
-CXXFLAGS = -std=c++11 -Wall -g 
+CXXFLAGS = -std=c++11 -Wall -g -O3
 LDFLAGS = 
 
 # Makefile settings - Can be customized.
@@ -12,8 +12,8 @@ APPNAME = BusRoute
 EXT = .C
 SRCDIR = src
 OBJDIR = obj
-BOOSTDIR = -I/opt/devl/optimize/boost/include
-GOOGLEOR = -I/home/e140506/Downloads/or_tools_bin/include
+BOOSTDIR =-I/opt/devl/optimize/boost/include
+GOOGLEOR =-I/home/e140506/Downloads/or_tools_bin/include
 INCS = ${BOOSTDIR} ${GOOGLEOR}
 GOOGLEORLIBS = -L/home/e140506/Downloads/or_tools_bin/lib -lortools -lprotobuf
 PTHREAD= -pthread

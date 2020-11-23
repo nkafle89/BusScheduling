@@ -9,7 +9,6 @@ void ColumnGeneration();
 
 /*
 namespace operations_research{
-
 void BuildandSolveMIP() {
   // Create the linear solver with the SCIP backend.
   MPSolver solver("Problem", MPSolver::CLP_LINEAR_PROGRAMMING);
@@ -20,9 +19,9 @@ void BuildandSolveMIP() {
 	  //SetIntegerParam(MPSolverParameters::IntegerParam param, int value)
   // Create the variables
 
-  MPVariable* const x1 = solver.MakeNumVar(0.0, 1, "x1");
-  MPVariable* const x2 = solver.MakeNumVar(0.0, 1, "x2");
-  MPVariable* const x3 = solver.MakeNumVar(0.0, 1, "x3");
+  MPVariable* const x1 = solver.MakeNumVar(0.0, + solver.infinity(), "x1"); //+ MPSolver::infinity()
+  MPVariable* const x2 = solver.MakeNumVar(0.0, + solver.infinity(), "x2");
+  MPVariable* const x3 = solver.MakeNumVar(0.0, + solver.infinity(), "x3");
   //MPVariable* const x4 = solver.MakeNumVar(0.0, 1, "x4");
 
   cout << "Number of variables = " << solver.NumVariables()<< std::endl;

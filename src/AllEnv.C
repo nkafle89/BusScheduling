@@ -10,16 +10,20 @@ void AllEnv::createRouteCovConstraint()
 	for(Route* rtr: _allRoutes)
 	{
 		if (rtr->isDepot()) continue;
-		string name = "Coverage_Rtr_" + to_string(rtr->getId());
-		LinearExpr pathSum;
-		for (Path* path: rtr->presentInPath())
+
+		//if (!rtr->getRow())
 		{
-			//cout << *path <<endl;
-			pathSum += path->getVar();
+			string name = "Coverage_Rtr_" + to_string(rtr->getId());
+			LinearExpr pathSum;
+			for (Path* path: rtr->presentInPath())
+			{
+				//cout << *path <<endl;
+				pathSum += path->getVar();
+			}
+			//cout << pathSum <<endl;
+			MPConstraint* row = solver->MakeRowConstraint(pathSum <= 1.0, name);
+			rtr->setRow(row);
 		}
-		//cout << pathSum <<endl;
-		MPConstraint* row = solver->MakeRowConstraint(pathSum <= 1.0, name);
-		rtr->setRow(row);
 	}
 }
 
@@ -29,10 +33,10 @@ void AllEnv::createPathVariables()
 	MPSolver* solver = getSolver();
 	for (Path* path: _allpaths)
 	{
-		if (!path->getVar())
+		//if (!path->getVar())
 		{
 			string name = "X" + to_string(path->getId());
-			MPVariable* const x = solver->MakeNumVar(0.0, 1, name);
+			MPVariable* const x = solver->MakeNumVar(0.0, solver->infinity(), name);
 			path->setVar(x);
 		}
 	}
@@ -47,7 +51,7 @@ void AllEnv::createCapConstraint()
 	{
 		Caps += path->getVar();
 	}
-	_capConst=solver->MakeRowConstraint(Caps <= 5.0, name);
+	_capConst=solver->MakeRowConstraint(Caps <= 300.0, name);
 }
 
 void AllEnv::setObj()
@@ -59,6 +63,25 @@ void AllEnv::setObj()
 		objective->SetCoefficient(path->getVar(), path->getProfit());
 	}
 	objective->SetMaximization();
+}
+
+bool AllEnv::doesPathExists(Path* path)
+{
+	int sz = path->getPath().size();
+	double profit = path->getProfit();
+
+	auto it = _profitPathMap.equal_range(profit);
+
+	for (auto itr = it.first; itr != it.second; ++itr)
+	{
+		if ( sz == int(itr->second->getPath().size()) )
+		{
+			if ( itr->second->getPath() == path->getPath() )
+				return true;
+		}
+	}
+	_profitPathMap.insert({ profit , path });
+	return false;
 }
 
 BellManFord* AllEnv::getBellManFord()

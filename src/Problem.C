@@ -13,11 +13,11 @@ void ColumnGeneration()
 	MPSolver* solver = allenv->getSolver();
 	MPSolverParameters params;
 	MPSolverParameters::IntegerParam iparms = MPSolverParameters::IntegerParam::LP_ALGORITHM;
-	params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::BARRIER);
+	params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::PRIMAL);
 
 	bool loopAgain = true;
 	int loopCount = 0;
-	while (loopAgain && loopCount <=5)
+	while (loopAgain && loopCount <=50)
 	{
 		loopCount++;
 		int added = bellman->getPositivePaths();
@@ -25,15 +25,16 @@ void ColumnGeneration()
 		cout << "Added " << added << " routes." << endl;
 		if (added)
 		{
+			solver->Clear();
 			auto start = high_resolution_clock::now();
 			allenv->createPathVariables();
+
 			allenv->createRouteCovConstraint();
 			allenv->createCapConstraint();
 			allenv->setObj();
 			auto stop = high_resolution_clock::now();
 			duration<double, milli> duration = stop - start;
 			cout <<"Writing LP took "<< duration.count() <<" ms." <<endl;
-
 
 			solver->Solve(params);
 
@@ -60,7 +61,7 @@ void ColumnGeneration()
 					if(dual>0.01)
 					{
 						rtr->reducedCost(rtr->getProfit()- dual);
-						cout << "Dual " << dual <<endl;
+						//cout << "Dual " << dual <<endl;
 					}
 				}
 			}
