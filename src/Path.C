@@ -10,6 +10,16 @@ Path::Path()
 	_reducedprofit = 0;
 }
 
+Path::Path(vector<Route*> routes)
+{
+	_profit = 0;
+	_reducedprofit = 0;
+	for(Route* rtr: routes)
+	{
+		addRoute(rtr);
+	}
+}
+
 void Path::addRoute( Route* rtr )
 {
 	_path.push_back(rtr);
@@ -17,12 +27,12 @@ void Path::addRoute( Route* rtr )
 	incrReducedProfit( rtr->reducedCost() );
 }
 
-void Path::buildIncidenceRelation(Path* path)
+void Path::buildIncidenceRelation()
 {
-	vector<Route*> allroutes = path->getPath();
+	vector<Route*> allroutes = this->getPath();
 	for (Route* rtr: allroutes)
 	{
-		rtr->presentInPath(path);
+		rtr->presentInPath(this);
 	}
 }
 

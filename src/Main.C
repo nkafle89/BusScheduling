@@ -37,16 +37,19 @@ int main(int argc, char* argv[])
     {
 		generateAllPaths();
 		cout << allenv->getAllPaths().size() <<endl;
+/*		string Pathfile;
+		ofstream pfile("./allPaths");
+		for (int i =0; i<allenv->getAllPaths().size(); ++i )
+		{
+			pfile<<*(allenv->getAllPaths().at(i))<<endl;
+		}*/
+
+
 		allenv->createPathVariables();
 		allenv->createRouteCovConstraint();
 		allenv->createCapConstraint();
 		allenv->setObj();
-/*		for (int i= 0; i<allenv->getAllPaths().size(); ++i )
-		{
-			cout << *(allenv->getAllPaths().at(i)) <<endl;
-		}*/
 
-		//cout << *(allenv->getAllPaths().at(1319228)) <<endl;
 		MPSolver* solver = allenv->getSolver();
 		MPSolverParameters params;
 		MPSolverParameters::IntegerParam iparms = MPSolverParameters::IntegerParam::LP_ALGORITHM;
@@ -59,19 +62,13 @@ int main(int argc, char* argv[])
 		cout <<"Total Time from Start to End "<< duration.count() <<" ms." <<endl;
 		string lpfile;
 		solver->ExportModelAsLpFormat(false, &lpfile);
-		ofstream file("./total.lp");
+		ofstream file("./tl.lp");
+		file << lpfile;
 		exit(1);
     }
 
-    ColumnGeneration();
 
-    {
-    	for (int i=0; i<allenv->getAllPaths().size(); ++i)
-    	{
-    		Path* path = allenv->getAllPaths().at(i);
-    		cout << "Result is " <<path->getVar()->solution_value()<<endl;
-    	}
-    }
+    ColumnGeneration();
 
     auto stop = high_resolution_clock::now();
 	duration<double, milli> duration = stop - start;

@@ -13,7 +13,7 @@ using namespace boost::posix_time;
 
 void ReadInputFiles()
 {
-    string inputFile = allenv->ScenarioDir() + "/random_schedule.csv";
+    string inputFile = allenv->ScenarioDir() + "/random_schedule7.csv";
     cout << "Reading Input From " << inputFile << endl;
 
     ifstream fin(inputFile);
@@ -55,6 +55,7 @@ void ReadInputFiles()
 
         auto depDate = depDT.date();
         int day = depDate.day();
+        //if (day > 6) continue;
 
         Route* route = new Route( counter++, origin, destination, busType, depDT, arrDT, profit, schType, day);
         allenv->AddRoute(route);

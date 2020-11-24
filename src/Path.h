@@ -19,6 +19,7 @@ private:
 
 public:
     Path();
+    Path(std::vector<Route*>);
     ~Path(){};
     double getProfit() { return _profit; }
     double getReducedProfit() { return _reducedprofit; }
@@ -37,6 +38,6 @@ public:
     operations_research::MPVariable* getVar(){return _var;}
 
 
-    void buildIncidenceRelation(Path* path);
+    void buildIncidenceRelation();
 };
 std::ostream& operator<<(std::ostream& os, Path& path);

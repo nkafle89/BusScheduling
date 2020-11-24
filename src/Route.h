@@ -11,6 +11,7 @@ class Route
 {
 private:
 	int _id;
+	int _newcolsStart = 0;
 	std::string _origin;
 	std::string _dest;
 	std::string _busType;
@@ -87,6 +88,8 @@ public:
     void setRow(operations_research::MPConstraint* row){_row = row;}
     operations_research::MPConstraint* getRow(){return _row; }
 
+    int newColsStart() { return _newcolsStart; }
+    void newColsStart( int x ) { _newcolsStart = x; }
 };
 std::ostream& operator<<(std::ostream& os, Route& rt);
 

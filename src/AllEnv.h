@@ -34,6 +34,7 @@ private:
     BellManFord* _bellman = nullptr;
     double _capconstDual= 0;
 
+    int _newcolsStart = 0 ;
 public:
     AllEnv(MPSolver* const solver): _solver(solver){}
     ~AllEnv() {}
@@ -69,4 +70,6 @@ public:
 
 	bool doesPathExists(Path* path);
 
+    int newColsStart() { return _newcolsStart; }
+    void newColsStart( int x ) { _newcolsStart = x; }
 };

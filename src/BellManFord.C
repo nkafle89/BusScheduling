@@ -98,7 +98,7 @@ int BellManFord::getAllCoveringPaths()
 		{
 			allenv->AddPath(path);
 			path->setId(_id++);
-			path->buildIncidenceRelation(path);
+			path->buildIncidenceRelation();
 			resetRouteValues(allrts, source);
 			ith++;
 		}
@@ -152,7 +152,7 @@ int BellManFord::getPositivePaths()
 
 			allenv->AddPath(path);
 			path->setId(_id++);
-			path->buildIncidenceRelation(path);
+			path->buildIncidenceRelation();
 			count++;
 			//cout << *path <<endl;
 		}
