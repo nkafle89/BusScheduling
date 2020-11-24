@@ -14,8 +14,8 @@ public:
 
 	void BellManFordSearch(std::vector<Route*>& allroutes, bool remove = false);
 	void resetRouteValues(std::vector<Route*>& allroutes, Route* source, bool visitedNode= false);
-	Path* backTrackPath(Route* dest );
-	void getAllCoveringPaths();
+	Path* backTrackPath(Route* dest, bool includeSink = true);
+	int getAllCoveringPaths();
 	void Relax(Route* rtr, Route* next, bool& changes, bool& remove);
 	int getPositivePaths();
 };

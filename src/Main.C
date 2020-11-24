@@ -33,7 +33,46 @@ int main(int argc, char* argv[])
     CreateExtendMap();
     cout<< "Solving Bus Routing problem..."<< endl;
 
+    if (false)
+    {
+		generateAllPaths();
+		cout << allenv->getAllPaths().size() <<endl;
+		allenv->createPathVariables();
+		allenv->createRouteCovConstraint();
+		allenv->createCapConstraint();
+		allenv->setObj();
+/*		for (int i= 0; i<allenv->getAllPaths().size(); ++i )
+		{
+			cout << *(allenv->getAllPaths().at(i)) <<endl;
+		}*/
+
+		//cout << *(allenv->getAllPaths().at(1319228)) <<endl;
+		MPSolver* solver = allenv->getSolver();
+		MPSolverParameters params;
+		MPSolverParameters::IntegerParam iparms = MPSolverParameters::IntegerParam::LP_ALGORITHM;
+		params.SetIntegerParam(iparms, MPSolverParameters::LpAlgorithmValues::PRIMAL);
+
+		solver->Solve(params);
+		cout << "Objective is "  << solver->MutableObjective()->Value() << endl;
+		auto stop = high_resolution_clock::now();
+		duration<double, milli> duration = stop - start;
+		cout <<"Total Time from Start to End "<< duration.count() <<" ms." <<endl;
+		string lpfile;
+		solver->ExportModelAsLpFormat(false, &lpfile);
+		ofstream file("./total.lp");
+		exit(1);
+    }
+
     ColumnGeneration();
+
+    {
+    	for (int i=0; i<allenv->getAllPaths().size(); ++i)
+    	{
+    		Path* path = allenv->getAllPaths().at(i);
+    		cout << "Result is " <<path->getVar()->solution_value()<<endl;
+    	}
+    }
+
     auto stop = high_resolution_clock::now();
 	duration<double, milli> duration = stop - start;
 	cout <<"Total Time from Start to End "<< duration.count() <<" ms." <<endl;

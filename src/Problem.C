@@ -20,7 +20,17 @@ void ColumnGeneration()
 	while (loopAgain && loopCount <=50)
 	{
 		loopCount++;
-		int added = bellman->getPositivePaths();
+		//int added = bellman->getPositivePaths();
+		int added = 0;
+		if (loopCount==1)
+		{
+			added = bellman->getAllCoveringPaths();
+		}
+		else
+		{
+			added = bellman->getAllCoveringPaths();
+			//added = bellman->getPositivePaths();
+		}
 
 		cout << "Added " << added << " routes." << endl;
 		if (added)
@@ -75,4 +85,52 @@ void ColumnGeneration()
 	}
 }
 
+
+void generateAllPaths() //only good for 1 day problem
+{
+	auto start = high_resolution_clock::now();
+	cout<< "Starting to generate all paths" <<endl;
+
+	map<const int, vector<Path*>> lengthPathMap;
+
+	int id =0;
+	for(Route* rtr : allenv->getAllRoutes())
+	{
+		if (rtr->isDepot()) continue;
+		Path* path = new Path();
+		path->addRoute(rtr);
+		path->setId(id++);
+		path->buildIncidenceRelation(path);
+		lengthPathMap[0].push_back(path);
+		allenv->AddPath(path);
+	}
+
+	for (int i = 1; i< 15 ; ++i)
+	{
+		for (Path* path:lengthPathMap[i-1])
+		{
+			Route* last = path->getPath().back();
+
+			vector<Route*> canextd = last->GetExtendRoutes();
+
+			for (Route* rtr: canextd)
+			{
+				if (!rtr->isDepot())
+				{
+					Path* newPath = new Path(*path);
+					newPath->addRoute(rtr);
+					newPath->setId(id++);
+					path->buildIncidenceRelation(path);
+					allenv->AddPath(newPath);
+					//cout<<*newPath<<endl;
+				}
+			}
+		}
+	}
+
+	auto stop = high_resolution_clock::now();
+	duration<double, milli> duration = stop - start;
+	cout <<"No of Paths Created "<< allenv->getAllPaths().size() <<
+			" execution time " << duration.count() <<" ms." <<endl;
+}
 

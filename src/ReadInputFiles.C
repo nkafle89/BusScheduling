@@ -13,7 +13,7 @@ using namespace boost::posix_time;
 
 void ReadInputFiles()
 {
-    string inputFile = allenv->ScenarioDir() + "/random_schedule7.csv";
+    string inputFile = allenv->ScenarioDir() + "/random_schedule.csv";
     cout << "Reading Input From " << inputFile << endl;
 
     ifstream fin(inputFile);
@@ -23,7 +23,6 @@ void ReadInputFiles()
         cerr << "Missing Input file" <<endl;
     }
     int counter=0;
-
 
     // putting origin at the front
     ptime depotDT(time_from_string("1990-01-01 00:00:00"));

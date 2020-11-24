@@ -39,12 +39,15 @@ void BellManFord::BellManFordSearch(vector<Route*>& allroutes, bool remove )
 }
 
 
-Path* BellManFord::backTrackPath(Route* dest)
+Path* BellManFord::backTrackPath(Route* dest, bool includeSink)
 {
 	Path* path = new Path();
 
-	path->addRoute(dest);
-	dest->visited(true);
+	if (includeSink)
+	{
+		path->addRoute(dest);
+		dest->visited(true);
+	}
 
 	Route* rtr = dest->getPreviousRoute();
 
@@ -65,13 +68,13 @@ void BellManFord::resetRouteValues(vector<Route*>& allroutes, Route* source, boo
 		rtr->spCost(1000000);
 		rtr->setPreviousRoute(nullptr);
 		if ( visitedNode ) rtr->visited(false);
-		rtr->reducedCost(rtr->getProfit());
+		if ( visitedNode ) rtr->reducedCost(rtr->getProfit());
 	}
 	source->spCost(0);
 }
 
 
-void BellManFord::getAllCoveringPaths()
+int BellManFord::getAllCoveringPaths()
 {
 	auto start = high_resolution_clock::now();
 	cout<< "Starting to create Covering Paths" <<endl;
@@ -81,21 +84,35 @@ void BellManFord::getAllCoveringPaths()
 
 	int count = 0;
 	int ith = 0;
+	int oldid = _id;
 	int toCover = int(allrts.size()-2);
 	while (count < toCover )
 	{
 		BellManFordSearch(allrts, true);
-		Path* path = backTrackPath( sink );
+		double capDual = allenv->getCapacityDual();
+		Path* path = backTrackPath( sink, false );
 		count += path->getPath().size();
-		allenv->AddPath(path);
-		resetRouteValues(allrts, source);
-		ith++;
+
+		if ( (path->getReducedProfit() - capDual > 0) &&
+				!allenv->doesPathExists(path) )
+		{
+			allenv->AddPath(path);
+			path->setId(_id++);
+			path->buildIncidenceRelation(path);
+			resetRouteValues(allrts, source);
+			ith++;
+		}
+		else
+		{
+			delete path;
+		}
 	}
 	resetRouteValues(allrts, source, true);
 	
 	auto stop = high_resolution_clock::now();
 	duration<double, milli> duration = stop - start;
 	cout <<"No of Paths Created "<< ith <<" execution time " << duration.count() <<" ms." <<endl;
+	return _id-oldid;
 }
 
 
@@ -119,9 +136,11 @@ int BellManFord::getPositivePaths()
 	cout<< "Starting BellManFord" <<endl;
 	vector<Route*> allrts = allenv->getAllRoutes();
 	Route* source = allrts.front();
+	//Route* sink = allrts.back();
 
 	BellManFordSearch(allrts, false);
 	double capDual = allenv->getCapacityDual();
+	//cout << "Cap Dual is " << capDual <<endl;
 	for (Route* rtr: allrts)
 	{
 		if( rtr->isDepot() ) continue;
@@ -129,12 +148,13 @@ int BellManFord::getPositivePaths()
 		Path* path = backTrackPath( rtr );
 		if ( path->getReducedProfit() - capDual > 0 )
 		{
-			if (allenv->doesPathExists(path)) continue;
+			if (allenv->doesPathExists(path)) return count;
 
 			allenv->AddPath(path);
 			path->setId(_id++);
 			path->buildIncidenceRelation(path);
 			count++;
+			//cout << *path <<endl;
 		}
 		else
 		{

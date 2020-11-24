@@ -6,6 +6,7 @@ using namespace std;
 
 
 void ColumnGeneration();
+void generateAllPaths();
 
 /*
 namespace operations_research{
